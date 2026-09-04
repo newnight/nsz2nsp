@@ -31,6 +31,7 @@ jobs:
 
       - name: Smoke test CLI
         run: |
+          swift build -c release --arch ${{ matrix.arch }}
           BIN="$(swift build -c release --arch ${{ matrix.arch }} --show-bin-path)/nszcli"
           [ -f "$BIN" ] || { echo "CLI binary not found at $BIN"; exit 1; }
           file "$BIN"

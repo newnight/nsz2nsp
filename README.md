@@ -9,10 +9,16 @@ A native macOS NSZ / NCZ decompressor (NSZ → NSP, NCZ → NCA) with a drag & d
 Pure Swift + SPM with the zstd library vendored as source — zero third-party dependencies.
 纯 Swift + SPM 实现，zstd 解压库直接内嵌源码，无任何第三方依赖。
 
+> ⚠️ Decompression only — this tool does not pack or create `.nsz` / `.ncz` files. For packing, use the original [nsz](https://github.com/nicotine-plus/nsz) tool.
+> ⚠️ 仅支持解压 —— 本工具不打包、不生成 `.nsz` / `.ncz` 文件，打包请使用原版 [nsz](https://github.com/nicotine-plus/nsz) 工具。
+
 ## Features / 特性
 
 - Full NSZ → NSP / NCZ → NCA decompression, supporting both solid and block compression modes.
 - 完整 NSZ → NSP / NCZ → NCA 解压，支持 solid 与 block 两种压缩模式。
+
+- Decompress only (no packing): reads `.nsz` / `.ncz`, writes `.nsp` / `.nca` — it never compresses in the other direction.
+- 仅解压（不打包）：读取 `.nsz` / `.ncz`，输出 `.nsp` / `.nca`，不做反向压缩。
 
 - Zero-hole corruption scan: detects contiguous zero regions in the compressed stream (a typical sign of download/transfer corruption) before extraction and warns you up front.
 - 零洞损坏扫描：解压前扫描压缩流中的连续全零区（下载/传输损坏的典型特征），提前告警，避免产出损坏文件。

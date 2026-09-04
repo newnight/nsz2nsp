@@ -1,7 +1,12 @@
+<p align="center"><img src="Resources/AppIcon.png" width="96" alt="Nsz2Nsp"></p>
+
 # Nsz2Nsp
 
 > ⚡ **Powered by AI** — This project was built through human–AI collaboration (WorkBuddy): core decompression logic, byte-level tests, and the GUI were all AI-assisted.
 > ⚡ **Powered by AI** — 本项目由 AI（WorkBuddy）与人类协作完成，从核心解压逻辑、字节级测试到 GUI 均为 AI 辅助开发。
+
+> 📱 **Android version / Android 版**：[nsz2nsp_apk](https://github.com/newnight/nsz2nsp_apk) — Kotlin port of this project.
+> 📱 **Android 版**：[nsz2nsp_apk](https://github.com/newnight/nsz2nsp_apk) —— 本项目的 Kotlin 移植版。
 
 A native macOS NSZ / NCZ decompressor (NSZ → NSP, NCZ → NCA) with a drag & drop GUI, a Finder right-click Quick Action, and a CLI.
 一款 macOS 原生的 NSZ / NCZ 解压工具（NSZ → NSP，NCZ → NCA），提供拖拽 GUI、Finder 右键一键解压和 CLI 三种使用方式。

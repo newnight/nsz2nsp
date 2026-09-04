@@ -35,6 +35,13 @@ else
   ICON_KEY=""
 fi
 
+# embed localized resources (en.lproj / zh-Hans.lproj Localizable.strings + InfoPlist.strings)
+for LPROJ in Resources/*.lproj; do
+  [ -d "$LPROJ" ] || continue
+  cp -R "$LPROJ" "$APP/Contents/Resources/"
+  echo "==> Embedded localization: $(basename "$LPROJ")"
+done
+
 # embed optional window background image (Resources/Background.png|jpg|jpeg|svg)
 for BGEXT in png jpg jpeg svg; do
   if [ -f "Resources/Background.$BGEXT" ]; then
@@ -49,11 +56,11 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>CFBundleDevelopmentRegion</key><string>zh_CN</string>
+    <key>CFBundleDevelopmentRegion</key><string>en</string>
     <key>CFBundleExecutable</key><string>Nsz</string>
     <key>CFBundleIdentifier</key><string>com.biu.nszapp</string>
     <key>CFBundleName</key><string>Nsz</string>
-    <key>CFBundleDisplayName</key><string>NSZ 解压</string>
+    <key>CFBundleDisplayName</key><string>NSZ Extract</string>
     <key>CFBundlePackageType</key><string>APPL</string>
     <key>CFBundleShortVersionString</key><string>1.0</string>
     <key>CFBundleVersion</key><string>1</string>

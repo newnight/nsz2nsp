@@ -1,0 +1,25 @@
+/* Nsz.app — 简体中文界面文案 */
+
+"window.title" = "NSZ 解压";
+"drop.title" = "将 .nsz / .ncz 文件拖到这里";
+"drop.sub" = "解压到文件所在目录 · 重名自动按时间加后缀";
+"empty.hint" = "还没有任务\n拖入文件开始解压";
+"footer.ready" = "就绪";
+"task.queued" = "等待中…";
+"task.scanning" = "扫描 / 解压中…";
+"task.extracting" = "解压中…";
+"task.renamed" = "重名 → %@";
+"task.progress" = "解压中 %.0f%%（%.0f / %.0f MB）";
+"task.done" = "完成 ✓";
+"task.done.arrow" = "完成 ✓ → %@";
+"task.failed" = "失败：%@";
+"skip.unsupported" = "跳过不支持的文件：%@（仅支持 .nsz / .ncz）";
+"footer.renamed" = "输出已存在，按时间重命名为 %@";
+"footer.verified" = "%1$@ [%2$@…] %3$@";
+"footer.copied" = "%@ 已复制";
+"footer.failed" = "❌ %1$@：%2$@";
+"footer.zeroholes" = "⚠️ %1$@：压缩流内发现 %2$d 处零洞，文件很可能已损坏，建议重新下载";
+"warn.zeroholes" = "⚠️ 检测到 %d 处零洞（共 %.1f MB）— 文件可能损坏";
+"verify.ok" = "校验通过";
+"verify.mismatch" = "哈希不匹配";
+"quickaction.name" = "解压 NSZ";

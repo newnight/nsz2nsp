@@ -1,6 +1,14 @@
 import AppKit
 import NszCore
 
+// MARK: - Localization
+
+/// Localized string lookup (en.lproj / zh-Hans.lproj Localizable.strings in the bundle).
+func L(_ key: String, _ args: CVarArg...) -> String {
+    let fmt = NSLocalizedString(key, comment: "")
+    return args.isEmpty ? fmt : String(format: fmt, arguments: args)
+}
+
 // MARK: - Task model
 
 final class DecompressTask: NSObject {
@@ -8,7 +16,7 @@ final class DecompressTask: NSObject {
 
     let url: URL
     var state: State = .queued
-    var status: String = "等待中…"
+    var status: String = L("task.queued")
     var progress: Double = 0
     /// true if the output was renamed because of a name conflict
     var renamed = false
@@ -124,7 +132,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             contentRect: NSRect(x: 0, y: 0, width: 560, height: 460),
             styleMask: [.titled, .closable, .miniaturizable, .resizable],
             backing: .buffered, defer: false)
-        win.title = "NSZ 解压"
+        win.title = L("window.title")
         win.titlebarAppearsTransparent = false
         win.minSize = NSSize(width: 460, height: 360)
 
@@ -135,13 +143,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         drop.autoresizingMask = [.width]
         drop.onFiles = { [weak self] urls in self?.addFiles(urls) }
 
-        let dropTitle = NSTextField(labelWithString: "将 .nsz / .ncz 文件拖到这里")
+        let dropTitle = NSTextField(labelWithString: L("drop.title"))
         dropTitle.font = NSFont.systemFont(ofSize: 16, weight: .semibold)
         dropTitle.alignment = .center
         dropTitle.frame = NSRect(x: 0, y: 46, width: 560, height: 22)
         dropTitle.autoresizingMask = [.width]
 
-        let dropSub = NSTextField(labelWithString: "解压到文件所在目录 · 重名自动按时间加后缀")
+        let dropSub = NSTextField(labelWithString: L("drop.sub"))
         dropSub.font = NSFont.systemFont(ofSize: 11)
         dropSub.textColor = .secondaryLabelColor
         dropSub.alignment = .center
@@ -194,7 +202,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         tableView = table
 
         // --- empty hint ---
-        emptyHint = NSTextField(wrappingLabelWithString: "还没有任务\n拖入文件开始解压")
+        emptyHint = NSTextField(wrappingLabelWithString: L("empty.hint"))
         emptyHint.font = NSFont.systemFont(ofSize: 12)
         emptyHint.textColor = .tertiaryLabelColor
         emptyHint.alignment = .center
@@ -203,7 +211,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         emptyHint.autoresizingMask = [.width]
 
         // --- footer ---
-        statusFooter = NSTextField(labelWithString: "就绪")
+        statusFooter = NSTextField(labelWithString: L("footer.ready"))
         statusFooter.font = NSFont.systemFont(ofSize: 11)
         statusFooter.textColor = .secondaryLabelColor
         statusFooter.lineBreakMode = .byTruncatingMiddle
@@ -236,7 +244,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         for u in urls {
             let ext = u.pathExtension.lowercased()
             guard ext == "nsz" || ext == "ncz" else {
-                setFooter("跳过不支持的文件：\(u.lastPathComponent)（仅支持 .nsz / .ncz）")
+                setFooter(L("skip.unsupported", u.lastPathComponent))
                 continue
             }
             guard !tasks.contains(where: { $0.url.standardizedFileURL == u.standardizedFileURL }) else { continue }
@@ -269,7 +277,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func process(_ task: DecompressTask) {
         onMain {
             task.state = .running
-            task.status = "扫描 / 解压中…"
+            task.status = L("task.scanning")
             self.reload()
         }
 
@@ -281,9 +289,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             onMain {
                 task.renamed = conflict
                 task.outputPath = target
-                task.status = conflict ? "重名 → \(targetName)" : "解压中…"
+                task.status = conflict ? L("task.renamed", targetName) : L("task.extracting")
                 self.reload()
-                if conflict { self.setFooter("输出已存在，按时间重命名为 \(targetName)") }
+                if conflict { self.setFooter(L("footer.renamed", targetName)) }
             }
 
             try decompressContainer(inputPath: task.url.path, outputPath: target, skipScan: false) { [weak self] event in
@@ -292,30 +300,31 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 case .scanWarning(let name, let runs):
                     let totalMB = Double(runs.reduce(0) { $0 + $1.length }) / 1048576
                     self.onMain {
-                        task.status = String(format: "⚠️ 检测到 %d 处零洞（共 %.1f MB）— 文件可能损坏", runs.count, totalMB)
-                        self.setFooter("⚠️ \(name)：压缩流内发现 \(runs.count) 处零洞，文件很可能已损坏，建议重新下载")
+                        task.status = L("warn.zeroholes", runs.count, totalMB)
+                        self.setFooter(L("footer.zeroholes", name, runs.count))
                         self.reload()
                     }
                 case .progress(_, let written, let total):
                     let frac = total > 0 ? Double(written) / Double(total) : 0
                     self.onMain {
                         task.progress = frac
-                        task.status = String(format: "解压中 %.0f%%（%.0f / %.0f MB）", frac * 100,
-                                             Double(written) / 1048576, Double(total) / 1048576)
+                        task.status = L("task.progress", frac * 100,
+                                        Double(written) / 1048576, Double(total) / 1048576)
                         self.reload()
                     }
                 case .entryDone(let name, let hash, let verified):
                     self.onMain {
-                        self.setFooter("\(name) [\(hash.prefix(16))…] \(verified ? "校验通过" : "哈希不匹配")")
+                        self.setFooter(L("footer.verified", name, String(hash.prefix(16)),
+                                         verified ? L("verify.ok") : L("verify.mismatch")))
                     }
                 case .entryCopied(let name):
-                    self.onMain { self.setFooter("\(name) 已复制") }
+                    self.onMain { self.setFooter(L("footer.copied", name)) }
                 case .done(let summary):
                     self.onMain {
                         task.progress = 1
                         task.state = .done
                         let outName = ((task.outputPath ?? "") as NSString).lastPathComponent
-                        task.status = outName.isEmpty ? "完成 ✓" : "完成 ✓ → \(outName)"
+                        task.status = outName.isEmpty ? L("task.done") : L("task.done.arrow", outName)
                         self.setFooter(summary)
                         self.reload()
                     }
@@ -326,9 +335,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         } catch {
             onMain {
                 task.state = .failed
-                task.status = "失败：\(error)"
+                task.status = L("task.failed", String(describing: error))
                 self.reload()
-                self.setFooter("❌ \(task.url.lastPathComponent)：\(error)")
+                self.setFooter(L("footer.failed", task.url.lastPathComponent, String(describing: error)))
             }
         }
     }
@@ -415,7 +424,7 @@ enum QuickActionInstaller {
         // only meaningful when running from a real .app bundle
         guard appPath.hasSuffix(".app") else { return }
 
-        let name = "解压 NSZ"
+        let name = L("quickaction.name")
         let fm = FileManager.default
         let wfContents = NSHomeDirectory() + "/Library/Services/\(name).workflow/Contents"
         let infoPath = wfContents + "/Info.plist"

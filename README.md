@@ -1,4 +1,4 @@
-# Nsz
+# Nsz2Nsp
 
 > ⚡ **Powered by AI** — This project was built through human–AI collaboration (WorkBuddy): core decompression logic, byte-level tests, and the GUI were all AI-assisted.
 > ⚡ **Powered by AI** — 本项目由 AI（WorkBuddy）与人类协作完成，从核心解压逻辑、字节级测试到 GUI 均为 AI 辅助开发。

@@ -1,4 +1,4 @@
-<p align="center"><img src="Resources/AppIcon.png" width="96" alt="Nsz2Nsp"></p>
+<p align="center"><img src="social-preview.png" alt="Nsz2Nsp" width="800"></p>
 
 # Nsz2Nsp
 

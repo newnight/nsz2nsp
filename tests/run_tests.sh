@@ -4,7 +4,7 @@
 set -e
 cd "$(dirname "$0")/.."
 
-PY=/Users/biubiubiu/.workbuddy/binaries/python/envs/default/bin/python
+PY="${PYTHON:-$(command -v python3)}"
 
 if [[ "$1" == "--regen" ]]; then
   echo "[1/4] Regenerating test data..."

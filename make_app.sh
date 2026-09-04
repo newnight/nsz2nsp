@@ -15,14 +15,14 @@ case "$ARCH" in
 esac
 
 echo "==> swift build -c release --arch $ARCH"
-swift build -c release --arch "$ARCH"
+BIN_DIR="$(swift build -c release --arch "$ARCH" --show-bin-path)"
+echo "==> bin dir: $BIN_DIR"
 
 APP="build/Nsz.app"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 
-BIN=".build/release-$ARCH/nszgui"
-[ -f "$BIN" ] || BIN=".build/release/nszgui"
+BIN="$BIN_DIR/nszgui"
 cp "$BIN" "$APP/Contents/MacOS/Nsz"
 chmod +x "$APP/Contents/MacOS/Nsz"
 

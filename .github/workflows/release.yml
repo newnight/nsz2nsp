@@ -31,10 +31,8 @@ jobs:
 
       - name: Smoke test CLI
         run: |
-          swift build -c release --arch ${{ matrix.arch }}
-          BIN=".build/release-${{ matrix.arch }}/nszcli"
-          [ -f "$BIN" ] || BIN=".build/release/nszcli"
-          # regenerate small fixtures and byte-level verify (arm64 runner can run both archs? x86_64 binary cannot run on arm64 host — skip run, just verify linkage)
+          BIN="$(swift build -c release --arch ${{ matrix.arch }} --show-bin-path)/nszcli"
+          [ -f "$BIN" ] || { echo "CLI binary not found at $BIN"; exit 1; }
           file "$BIN"
           if [ "${{ matrix.arch }}" = "arm64" ]; then
             ./tests/run_tests.sh

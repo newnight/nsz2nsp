@@ -2,7 +2,7 @@
 
 "window.title" = "NSZ 解压";
 "drop.title" = "将 .nsz / .ncz 文件拖到这里";
-"drop.sub" = "解压到文件所在目录 · 重名自动按时间加后缀";
+"drop.sub" = "解压到文件所在目录 · 已解压过的文件自动跳过";
 "empty.hint" = "还没有任务\n拖入文件开始解压";
 "footer.ready" = "就绪";
 "task.queued" = "等待中…";
@@ -12,9 +12,11 @@
 "task.progress" = "解压中 %.0f%%（%.0f / %.0f MB）";
 "task.done" = "完成 ✓";
 "task.done.arrow" = "完成 ✓ → %@";
+"task.skipped" = "已存在，跳过 ✓";
 "task.failed" = "失败：%@";
 "skip.unsupported" = "跳过不支持的文件：%@（仅支持 .nsz / .ncz）";
 "footer.renamed" = "输出已存在，按时间重命名为 %@";
+"footer.skipped" = "%@：输出文件已存在，跳过";
 "footer.verified" = "%1$@ [%2$@…] %3$@";
 "footer.copied" = "%@ 已复制";
 "footer.failed" = "❌ %1$@：%2$@";

@@ -12,7 +12,7 @@ func L(_ key: String, _ args: CVarArg...) -> String {
 // MARK: - Task model
 
 final class DecompressTask: NSObject {
-    enum State { case queued, running, done, failed }
+    enum State { case queued, running, done, skipped, failed }
 
     let url: URL
     var state: State = .queued
@@ -215,7 +215,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusFooter.font = NSFont.systemFont(ofSize: 11)
         statusFooter.textColor = .secondaryLabelColor
         statusFooter.lineBreakMode = .byTruncatingMiddle
-        statusFooter.frame = NSRect(x: 12, y: 8, width: 536, height: 16)
+        statusFooter.frame = NSRect(x: 12, y: 8, width: 380, height: 16)
         statusFooter.autoresizingMask = [.width]
 
         content.addSubview(drop)
@@ -282,6 +282,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         do {
+            // already-extracted file: skip instead of re-extracting / renaming
+            let defaultTarget = try NszOutput.defaultOutputPath(forInput: task.url.path)
+            let rawTarget = ((task.url.path as NSString).deletingLastPathComponent as NSString)
+                .appendingPathComponent(defaultTarget)
+            if FileManager.default.fileExists(atPath: rawTarget) {
+                onMain {
+                    task.state = .skipped
+                    task.progress = 1
+                    task.outputPath = rawTarget
+                    task.status = L("task.skipped")
+                    self.reload()
+                    self.setFooter(L("footer.skipped", task.url.lastPathComponent))
+                }
+                return
+            }
+
             let target = try NszOutput.outputPathBeside(input: task.url.path)
             let targetName = (target as NSString).lastPathComponent
             let defaultName = try NszOutput.defaultOutputPath(forInput: task.url.path)
@@ -400,10 +416,14 @@ extension AppDelegate: NSTableViewDataSource, NSTableViewDelegate {
         name?.stringValue = task.url.lastPathComponent
         name?.toolTip = task.url.path
         status?.stringValue = task.status
+        // done / skipped states get a bold font so they stay readable on the background image
+        status?.font = NSFont.systemFont(ofSize: 11,
+            weight: (task.state == .done || task.state == .skipped) ? .bold : .regular)
         switch task.state {
         case .queued:   status?.textColor = .secondaryLabelColor
         case .running:  status?.textColor = .controlAccentColor
         case .done:     status?.textColor = .systemGreen
+        case .skipped:  status?.textColor = .systemTeal
         case .failed:   status?.textColor = .systemRed
         }
         bar?.doubleValue = task.progress

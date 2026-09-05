@@ -2,7 +2,7 @@
 
 "window.title" = "NSZ Extract";
 "drop.title" = "Drop .nsz / .ncz files here";
-"drop.sub" = "Extracts next to the source files · name conflicts get a timestamp suffix";
+"drop.sub" = "Extracts next to the source files · already-extracted files are skipped";
 "empty.hint" = "No tasks yet\nDrop files to start extracting";
 "footer.ready" = "Ready";
 "task.queued" = "Waiting…";
@@ -12,9 +12,11 @@
 "task.progress" = "Extracting %.0f%% (%.0f / %.0f MB)";
 "task.done" = "Done ✓";
 "task.done.arrow" = "Done ✓ → %@";
+"task.skipped" = "Skipped ✓ (output already exists)";
 "task.failed" = "Failed: %@";
 "skip.unsupported" = "Skipped unsupported file: %@ (.nsz / .ncz only)";
 "footer.renamed" = "Output exists, renamed with a timestamp to %@";
+"footer.skipped" = "%@: output already exists, skipped";
 "footer.verified" = "%1$@ [%2$@…] %3$@";
 "footer.copied" = "%@ copied";
 "footer.failed" = "❌ %1$@: %2$@";
